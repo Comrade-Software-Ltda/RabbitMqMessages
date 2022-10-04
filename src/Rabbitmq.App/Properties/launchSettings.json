@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "RabbitMqMessages.App": {
+    "Rabbitmq.App": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

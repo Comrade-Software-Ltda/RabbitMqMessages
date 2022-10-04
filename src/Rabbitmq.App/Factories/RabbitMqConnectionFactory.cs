@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Text;
-using RabbitMqMessages.App.Models;
-using RabbitMqMessages.App.Services;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
+using Rabbitmq.App.Models;
+using Rabbitmq.App.Services;
 
-namespace RabbitMqMessages.App.Factories;
+namespace Rabbitmq.App.Factories;
 
 public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
 {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Text.Json;
-using RabbitMqMessages.App.Models;
 using Microsoft.AspNetCore.Mvc;
-using RabbitMqMessages.App.Factories;
 using Microsoft.AspNetCore.Http;
+using Rabbitmq.App.Models;
+using Rabbitmq.App.Factories;
 
-namespace RabbitMqMessages.App.Controllers;
+namespace Rabbitmq.App.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

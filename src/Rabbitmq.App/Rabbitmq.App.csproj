@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>RabbitMqMessages.App</AssemblyName>
+    <AssemblyName>Rabbitmq.App</AssemblyName>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

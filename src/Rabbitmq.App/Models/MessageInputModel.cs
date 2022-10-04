@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RabbitMqMessages.App.Models;
+namespace Rabbitmq.App.Models;
 
 public class MessageInputModel
 {

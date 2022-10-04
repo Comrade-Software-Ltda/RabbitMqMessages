@@ -1,4 +1,4 @@
-﻿namespace RabbitMqMessages.App.Factories;
+﻿namespace Rabbitmq.App.Factories;
 
 public class RabbitMqConfiguration
 {

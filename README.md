@@ -1,4 +1,4 @@
-# Projeto Comrade (comrade-rabbitmq-message)
+# Projeto Comrade (rabbitmq-messages)
 
 ## Run
 - Instale e rode o docker na sua máquina (https://docs.docker.com/desktop/install/windows-install/);

@@ -1,6 +1,6 @@
-﻿using RabbitMqMessages.App.Models;
+﻿using Rabbitmq.App.Models;
 
-namespace RabbitMqMessages.App.Factories;
+namespace Rabbitmq.App.Factories;
 
 public interface IRabbitMqConnectionFactory
 {

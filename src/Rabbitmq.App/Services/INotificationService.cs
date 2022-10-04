@@ -1,6 +1,6 @@
-﻿using RabbitMqMessages.App.Models;
+﻿using Rabbitmq.App.Models;
 
-namespace RabbitMqMessages.App.Services;
+namespace Rabbitmq.App.Services;
 
 public interface INotificationService
 {

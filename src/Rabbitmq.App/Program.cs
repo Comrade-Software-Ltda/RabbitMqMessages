@@ -2,7 +2,7 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace RabbitMqMessages.App;
+namespace Rabbitmq.App;
 
 public class Program
 {

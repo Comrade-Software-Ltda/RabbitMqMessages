@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text.Json;
-using RabbitMqMessages.App.Models;
+using Rabbitmq.App.Models;
 
-namespace RabbitMqMessages.App.Services;
+namespace Rabbitmq.App.Services;
 
 public class NotificationService : INotificationService
 {
