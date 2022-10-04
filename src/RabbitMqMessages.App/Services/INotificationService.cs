@@ -4,5 +4,5 @@ namespace RabbitMqMessages.App.Services;
 
 public interface INotificationService
 {
-    void NotifyUser(MessageInputModel messageInputModel);
+    void Notify(MessageInputModel message);
 }

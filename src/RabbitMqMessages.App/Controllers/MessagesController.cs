@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using RabbitMqMessages.App.Models;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMqMessages.App.Factories;
@@ -24,12 +25,15 @@ public class MessagesController : ControllerBase
     {
         try
         {
+            Console.WriteLine("[INFO] Post received message:\n" + JsonSerializer.Serialize(message));
             _factory.PostMessage(message);
+            Console.WriteLine("[INFO] ...Post received message done.");
             return Accepted();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, e);
+            Console.WriteLine("[ERROR] Error while posting message: " + ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex);
         }
     }
 }

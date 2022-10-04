@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -7,7 +8,22 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CreateHostBuilder(args).Build().Run();
+        try
+        {
+            Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # #");
+            var hostBuilder = CreateHostBuilder(args).Build();
+            Console.WriteLine("[INFO] Starting up application...");
+            hostBuilder.Run();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[ERROR] Application start-up failed: " + ex.Message);
+        }
+        finally
+        {
+            Console.WriteLine("[INFO] ...Ending application.");
+            Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # #");
+        }
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
