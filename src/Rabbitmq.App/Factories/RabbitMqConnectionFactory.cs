@@ -1,10 +1,7 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
-using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
-using Rabbitmq.App.Models;
 using Rabbitmq.App.Services;
 
 namespace Rabbitmq.App.Factories;
@@ -20,10 +17,10 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
 
     public RabbitMqConnectionFactory(IServiceProvider serviceProvider)
     {
-        Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # #");
+        Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #");
         _serviceProvider = serviceProvider;
         InitRabbitMqFactory();
-        Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # #");
+        Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #");
     }
 
     private void InitRabbitMqFactory()
@@ -32,7 +29,7 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
         {
             Console.WriteLine("[INFO] Initializing RabbitMq factory...");
             _configuration = new RabbitMqConfiguration();
-            Console.WriteLine("[INFO] RabbitMq configurations:\n" + System.Text.Json.JsonSerializer.Serialize(_configuration));
+            Console.WriteLine("[INFO] RabbitMq configurations:\n" + JsonObjectUtil.Serialize(_configuration));
             _factory = new ConnectionFactory
             {
                 HostName = _configuration.Host,
@@ -47,7 +44,8 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
                     Enabled = false
                 }
             };
-            //Console.WriteLine("[INFO] RabbitMq connection factory:\n" + System.Text.Json.JsonSerializer.Serialize(_factory));
+            Console.WriteLine("[INFO] ...RabbitMq factory done.");
+            //Console.WriteLine("[DEBUG] RabbitMq connection factory:\n" + SerializeJsonObject.Serialize(_factory));
             NewConnection();
         }
         catch (Exception ex)
@@ -58,7 +56,7 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
 
     public void PostMessage(MessageInputModel message)
     {
-        var stringfiedMessage = JsonConvert.SerializeObject(message);
+        var stringfiedMessage = JsonObjectUtil.Serialize(message);
         var bytesMessage = Encoding.UTF8.GetBytes(stringfiedMessage);
         if (bytesMessage.Length > 0)
         {
@@ -81,9 +79,11 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
         KeepConnectionIntegrity();
         _consumer.Received += (sender, eventArgs) =>
         {
+            Console.WriteLine("[DEBUG] Sender:\n" + JsonObjectUtil.Serialize(sender));
+            //Console.WriteLine("[DEBUG] Event args:\n" + JsonObjectUtil.Serialize(eventArgs));
             var contentArray = eventArgs.Body.ToArray();
             var contentString = Encoding.UTF8.GetString(contentArray);
-            var message = JsonConvert.DeserializeObject<MessageInputModel>(contentString);
+            var message = JsonObjectUtil.Deserialize<MessageInputModel>(contentString);
             if (message != null)
             {
                 Notify(message);
@@ -131,7 +131,7 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
         {
             Console.WriteLine("[INFO] Creating new RabbitMq connection...");
             _connection = _factory.CreateConnection();
-            Console.WriteLine("[INFO] RabbitMq connection:\n" + System.Text.Json.JsonSerializer.Serialize(_connection));
+            Console.WriteLine("[DEBUG] RabbitMq connection:\n" + JsonObjectUtil.Serialize(_connection));
             Console.WriteLine("[INFO] ...New RabbitMq connection done.");
             NewChannel();
         }
@@ -147,7 +147,7 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
         {
             Console.WriteLine("[INFO] Creating new RabbitMq channel...");
             _channel = _connection.CreateModel();
-            Console.WriteLine("[INFO] RabbitMq channel:\n" + System.Text.Json.JsonSerializer.Serialize(_channel));
+            Console.WriteLine("[DEBUG] RabbitMq channel:\n" + JsonObjectUtil.Serialize(_channel));
             Console.WriteLine("[INFO] ...New RabbitMq channel done.");
             NewQueue();
             NewConsumer();
@@ -204,7 +204,7 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
         {
             Console.WriteLine("[INFO] Creating new RabbitMq consumer...");
             _consumer = new EventingBasicConsumer(_channel);
-            Console.WriteLine("[INFO] RabbitMq consumer:\n" + System.Text.Json.JsonSerializer.Serialize(_consumer));
+            Console.WriteLine("[DEBUG] RabbitMq consumer:\n" + JsonObjectUtil.Serialize(_consumer));
             Console.WriteLine("[INFO] ...New RabbitMq consumer done.");
         }
         catch (Exception ex)

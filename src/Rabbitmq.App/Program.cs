@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -10,7 +9,7 @@ public class Program
     {
         try
         {
-            Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # #");
+            Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #");
             var hostBuilder = CreateHostBuilder(args).Build();
             Console.WriteLine("[INFO] Starting up application...");
             hostBuilder.Run();
@@ -22,7 +21,7 @@ public class Program
         finally
         {
             Console.WriteLine("[INFO] ...Ending application.");
-            Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # #");
+            Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #");
         }
     }
 

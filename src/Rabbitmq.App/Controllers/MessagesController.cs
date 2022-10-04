@@ -1,8 +1,5 @@
-﻿using System;
-using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Rabbitmq.App.Models;
 using Rabbitmq.App.Factories;
 
 namespace Rabbitmq.App.Controllers;
@@ -25,9 +22,9 @@ public class MessagesController : ControllerBase
     {
         try
         {
-            Console.WriteLine("[INFO] Post received message:\n" + JsonSerializer.Serialize(message));
+            Console.WriteLine("[INFO] Post received message:\n" + JsonObjectUtil.Serialize(message));
             _factory.PostMessage(message);
-            Console.WriteLine("[INFO] ...Post received message done.");
+            Console.WriteLine("[INFO] ...Post message done.");
             return Accepted();
         }
         catch (Exception ex)
