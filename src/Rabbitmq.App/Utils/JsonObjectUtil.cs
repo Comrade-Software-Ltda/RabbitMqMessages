@@ -1,5 +1,8 @@
-﻿using System.Text.Json;
+﻿using System.IO;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Rabbitmq.App.Utils;
 
@@ -9,7 +12,10 @@ public class JsonObjectUtil
 
     static JsonObjectUtil()
     {
-        Options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        Options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
         Options.Converters.Add(new JsonStringEnumConverter());
     }
 
@@ -38,6 +44,28 @@ public class JsonObjectUtil
         {
             Console.WriteLine("[ERROR] Error while trying to deserialize object: " + ex.Message);
             return default;
+        }
+    }
+
+    public static string ReturnJsonPropertyValue(string propertyName, string inputJsonString)
+    {
+        try
+        {
+            var reader = new JsonTextReader(new StringReader(inputJsonString));
+            while (reader.Read())
+            {
+                if (JsonToken.PropertyName.Equals(reader.TokenType) && propertyName.Equals(reader.Value))
+                {
+                    reader.Read();
+                    return reader.Value.ToString();
+                }
+            }
+            return "";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[ERROR] Error while trying to return json property value: " + ex.Message);
+            return "";
         }
     }
 }

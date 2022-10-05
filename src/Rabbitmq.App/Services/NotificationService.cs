@@ -2,8 +2,16 @@
 
 public class NotificationService : INotificationService
 {
-    public void Notify(MessageInputModel message)
+    private readonly IHttpClientService _httpClientService;
+
+    public NotificationService(IHttpClientService httpClientService)
     {
-        Console.WriteLine("[INFO] New message:\n" + JsonObjectUtil.Serialize(message));
+        _httpClientService = httpClientService;
+    }
+
+    public async Task Notify(MessageInputModel message)
+    {
+        var response = await _httpClientService.CallApiAsync(message);
+        Console.WriteLine("[INFO] Message response:\n" + JsonObjectUtil.Serialize(response));
     }
 }

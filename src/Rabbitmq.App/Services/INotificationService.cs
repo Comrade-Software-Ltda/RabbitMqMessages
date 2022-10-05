@@ -2,5 +2,5 @@
 
 public interface INotificationService
 {
-    void Notify(MessageInputModel message);
+    Task Notify(MessageInputModel message);
 }

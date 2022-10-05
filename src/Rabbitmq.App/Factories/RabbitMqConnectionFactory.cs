@@ -29,7 +29,7 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
         {
             Console.WriteLine("[INFO] Initializing RabbitMq factory...");
             _configuration = new RabbitMqConfiguration();
-            Console.WriteLine("[INFO] RabbitMq configurations:\n" + JsonObjectUtil.Serialize(_configuration));
+            Console.WriteLine("[DEBUG] RabbitMq configurations:\n" + JsonObjectUtil.Serialize(_configuration));
             _factory = new ConnectionFactory
             {
                 HostName = _configuration.Host,
@@ -58,51 +58,36 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
     {
         var stringfiedMessage = JsonObjectUtil.Serialize(message);
         var bytesMessage = Encoding.UTF8.GetBytes(stringfiedMessage);
-        if (bytesMessage.Length > 0)
-        {
-            KeepConnectionIntegrity();
-            Console.WriteLine("[INFO] Publishing in exchange: " + _configuration.Exchange + " -> (routingKey) " + _configuration.Queue);
-            _channel.BasicPublish(
-                exchange: _configuration.Exchange,
-                routingKey: _configuration.Queue,
-                basicProperties: null,
-                body: bytesMessage);
-        }
-        else
-        {
-            Console.WriteLine("[WARN] Received message empty.");
-        }
+        KeepConnectionIntegrity();
+        Console.WriteLine("[INFO] Publishing in exchange: " + _configuration.Exchange + " -> (routingKey) " + _configuration.Queue);
+        _channel.BasicPublish(
+            exchange: _configuration.Exchange,
+            routingKey: _configuration.Queue,
+            basicProperties: null,
+            body: bytesMessage);
     }
 
     public void ConsumeMessages()
     {
         KeepConnectionIntegrity();
-        _consumer.Received += (sender, eventArgs) =>
+        _consumer.Received += async (sender, eventArgs) =>
         {
             Console.WriteLine("[DEBUG] Sender:\n" + JsonObjectUtil.Serialize(sender));
-            //Console.WriteLine("[DEBUG] Event args:\n" + JsonObjectUtil.Serialize(eventArgs));
             var contentArray = eventArgs.Body.ToArray();
             var contentString = Encoding.UTF8.GetString(contentArray);
             var message = JsonObjectUtil.Deserialize<MessageInputModel>(contentString);
-            if (message != null)
-            {
-                Notify(message);
-            }
-            else
-            {
-                Console.WriteLine("[WARN] Consumed message content null.");
-            }
+            await Notify(message);
             _channel.BasicAck(eventArgs.DeliveryTag, false);
         };
         Console.WriteLine("[INFO] Consuming from queue: " + _configuration.Queue);
         _channel.BasicConsume(_configuration.Queue, false, _consumer);
     }
 
-    private void Notify(MessageInputModel message)
+    private async Task Notify(MessageInputModel message)
     {
         var scope = _serviceProvider.CreateScope();
         var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-        notificationService.Notify(message);
+        await notificationService.Notify(message);
     }
 
     private void KeepConnectionIntegrity()

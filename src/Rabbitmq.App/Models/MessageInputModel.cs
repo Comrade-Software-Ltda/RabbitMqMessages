@@ -15,4 +15,16 @@ public class MessageInputModel
     public string MethodName { get; set; }
     public string Params { get; set; }
     public DateTime CreatedAt { get; }
+
+    public string GetRequestUri()
+    {
+        return ModelName + "/" + MethodName;
+    }
+
+    public string GetRequestUriWithId()
+    {
+        var result = GetRequestUri();
+        var id = JsonObjectUtil.ReturnJsonPropertyValue("id", Params);
+        return string.IsNullOrWhiteSpace(id) ? result : result + "/" + id;
+    }
 }
