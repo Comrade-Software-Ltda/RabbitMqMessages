@@ -1,14 +1,14 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace Rabbitmq.App.Services;
 
 public class HttpClientService : IHttpClientService
 {
     private HttpClient _client;
+    private const string MediaType = "application/json";
     public Uri BaseAddressUri { get; set; }
 
     public HttpClientService()
@@ -24,7 +24,7 @@ public class HttpClientService : IHttpClientService
             BaseAddress = BaseAddressUri
         };
         _client.DefaultRequestHeaders.Accept.Clear();
-        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType));
         Console.WriteLine("[DEBUG] Http client:\n" + JsonObjectUtil.Serialize(_client));
         Console.WriteLine("[INFO] ...Http client done.");
     }
@@ -65,6 +65,7 @@ public class HttpClientService : IHttpClientService
             errorMessage = "[ERROR] Error in " + message.MethodName + " async method:" + ex.Message;
             result = new ApiResponseModel(HttpStatusCode.InternalServerError, errorMessage);
         }
+        result.MessageOutput.Id = message.Id;
         Console.WriteLine(errorMessage);
         return result;
     }
@@ -86,14 +87,14 @@ public class HttpClientService : IHttpClientService
     private async Task<ApiResponseModel> PostAsync(MessageInputModel message)
     {
         Console.WriteLine("[INFO] Post async method.");
-        var response = await _client.PostAsJsonAsync(message.GetRequestUri(), JObject.Parse(message.Params));
+        var response = await _client.PostAsync(message.GetRequestUri(), BuildMessageContent(message));
         return await BuildResponseContent(response);
     }
 
     private async Task<ApiResponseModel> UpdateAsync(MessageInputModel message)
     {
         Console.WriteLine("[INFO] Update async method.");
-        var response = await _client.PutAsJsonAsync(message.GetRequestUri(), JObject.Parse(message.Params));
+        var response = await _client.PutAsync(message.GetRequestUri(), BuildMessageContent(message));
         return await BuildResponseContent(response);
     }
 
@@ -111,5 +112,10 @@ public class HttpClientService : IHttpClientService
         var content = await response.Content.ReadAsStringAsync();
         Console.WriteLine("[DEBUG] Content:\n"  + JsonObjectUtil.Serialize(content));
         return new ApiResponseModel(response.StatusCode, content);
+    }
+
+    private static StringContent BuildMessageContent(MessageInputModel message)
+    {
+        return new StringContent(message.Params, Encoding.UTF8, MediaType);
     }
 }
