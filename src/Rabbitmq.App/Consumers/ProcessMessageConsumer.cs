@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
 using System.Threading;
-using System.Threading.Tasks;
 using Rabbitmq.App.Factories;
 
 namespace Rabbitmq.App.Consumers;
