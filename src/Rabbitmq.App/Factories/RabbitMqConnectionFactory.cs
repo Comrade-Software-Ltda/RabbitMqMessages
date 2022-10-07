@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -9,15 +10,17 @@ namespace Rabbitmq.App.Factories;
 public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _conf;
     private RabbitMqConfiguration _configuration;
     private ConnectionFactory _factory;
     private IConnection _connection;
     private IModel _channel;
     private EventingBasicConsumer _consumer;
 
-    public RabbitMqConnectionFactory(IServiceProvider serviceProvider)
+    public RabbitMqConnectionFactory(IConfiguration conf, IServiceProvider serviceProvider)
     {
         Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #");
+        _conf = conf;
         _serviceProvider = serviceProvider;
         InitRabbitMqFactory();
         Console.WriteLine("[INFO] # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #");
@@ -28,20 +31,31 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
         try
         {
             Console.WriteLine("[INFO] Initializing RabbitMq factory...");
-            _configuration = new RabbitMqConfiguration();
+            _configuration = new RabbitMqConfiguration
+            {
+                Host = _conf.GetValue<string>("RabbitMqConfig:Host"),
+                Port = _conf.GetValue<int>("RabbitMqConfig:Port"),
+                Exchange = _conf.GetValue<string>("RabbitMqConfig:Exchange"),
+                Queue = _conf.GetValue<string>("RabbitMqConfig:Queue"),
+                VirtualHost = _conf.GetValue<string>("RabbitMqConfig:VirtualHost"),
+                RequestedHeartbeat = new TimeSpan(_conf.GetValue<long>("RabbitMqConfig:RequestedHeartbeat")),
+                UserName = _conf.GetValue<string>("RabbitMqConfig:UserName"),
+                Password = _conf.GetValue<string>("RabbitMqConfig:Password"),
+                EnableSsl = _conf.GetValue<bool>("RabbitMqConfig:EnableSsl")
+            };
             Console.WriteLine("[DEBUG] RabbitMq configurations:\n" + JsonObjectUtil.Serialize(_configuration));
             _factory = new ConnectionFactory
             {
                 HostName = _configuration.Host,
                 Port = _configuration.Port,
                 VirtualHost = _configuration.VirtualHost,
+                RequestedHeartbeat = _configuration.RequestedHeartbeat,
                 UserName = _configuration.UserName,
                 Password = _configuration.Password,
-                RequestedHeartbeat = new TimeSpan(60),
                 Ssl =
                 {
                     ServerName = _configuration.Host,
-                    Enabled = false
+                    Enabled = _configuration.EnableSsl
                 }
             };
             Console.WriteLine("[INFO] ...RabbitMq factory done.");

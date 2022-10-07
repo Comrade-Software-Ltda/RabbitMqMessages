@@ -2,21 +2,13 @@
 
 public class RabbitMqConfiguration
 {
-    public RabbitMqConfiguration()
-    {
-        Host = "localhost";
-        Port = 5672;
-        Exchange = "amq.fanout";
-        Queue = "main";
-        VirtualHost = "/";
-        UserName = "admin";
-        Password = "pass123";
-    }
-    public string Host { get; }
-    public int Port { get; }
-    public string Exchange { get; }
-    public string Queue { get; }
-    public string VirtualHost { get; }
-    public string UserName { get; }
-    public string Password { get; }
+    public string Host { get; set; }
+    public int Port { get; set; }
+    public string Exchange { get; set; }
+    public string Queue { get; set; }
+    public string VirtualHost { get; set; }
+    public TimeSpan RequestedHeartbeat { get; set; }
+    public string UserName { get; set; }
+    public string Password { get; set; }
+    public bool EnableSsl { get; set; }
 }
