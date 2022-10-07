@@ -9,19 +9,13 @@ public class HttpClientService : IHttpClientService
 {
     private HttpClient _client;
     private const string MediaType = "application/json";
-    public Uri BaseAddressUri { get; set; }
 
-    public HttpClientService()
-    {
-        BaseAddressUri = new Uri("https://localhost:44304/api/v1/");
-    }
-
-    private void InitHttpClientService()
+    private void InitHttpClientService(string baseAddressUri)
     {
         Console.WriteLine("[INFO] Initializing http client...");
         _client = new HttpClient
         {
-            BaseAddress = BaseAddressUri
+            BaseAddress = new Uri(baseAddressUri)
         };
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType));
@@ -29,14 +23,14 @@ public class HttpClientService : IHttpClientService
         Console.WriteLine("[INFO] ...Http client done.");
     }
 
-    public async Task<ApiResponseModel> CallApiAsync(MessageInputModel message)
+    public async Task<ApiResponseModel> CallApiAsync(MessageInputModel message, string baseAddressUri)
     {
         Console.WriteLine("[INFO] Call api async method. Message:\n" + JsonObjectUtil.Serialize(message));
         var errorMessage = "";
         ApiResponseModel result;
         try
         {
-            InitHttpClientService();
+            InitHttpClientService(baseAddressUri);
             switch (message.MethodName)
             {
                 case "get-all":

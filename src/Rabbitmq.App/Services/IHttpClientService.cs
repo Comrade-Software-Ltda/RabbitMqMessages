@@ -2,5 +2,5 @@
 
 public interface IHttpClientService
 {
-    Task<ApiResponseModel> CallApiAsync(MessageInputModel message);
+    Task<ApiResponseModel> CallApiAsync(MessageInputModel message, string baseAddressUri);
 }
