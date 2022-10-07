@@ -45,7 +45,6 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
                 }
             };
             Console.WriteLine("[INFO] ...RabbitMq factory done.");
-            //Console.WriteLine("[DEBUG] RabbitMq connection factory:\n" + SerializeJsonObject.Serialize(_factory));
             NewConnection();
         }
         catch (Exception ex)

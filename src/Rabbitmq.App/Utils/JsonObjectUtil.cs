@@ -6,17 +6,18 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Rabbitmq.App.Utils;
 
-public class JsonObjectUtil
+public static class JsonObjectUtil
 {
-    private static readonly JsonSerializerOptions Options;
+    private static readonly JsonSerializerOptions Options = InitJsonSerializerOptions();
 
-    static JsonObjectUtil()
+    private static JsonSerializerOptions InitJsonSerializerOptions()
     {
-        Options = new JsonSerializerOptions
+        var options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
-        Options.Converters.Add(new JsonStringEnumConverter());
+        options.Converters.Add(new JsonStringEnumConverter());
+        return options;
     }
 
     public static string Serialize(object inputJsonObject)
